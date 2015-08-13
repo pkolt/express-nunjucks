@@ -1,0 +1,38 @@
+{
+  "name": "express-nunjucks",
+  "version": "0.9.0",
+  "description": "Is the glue for express and nunjucks",
+  "keywords": [
+    "express",
+    "nunjucks",
+    "template"
+  ],
+  "bugs": {
+    "url": "https://github.com/pkolt/express-nunjucks/issues",
+    "email": "pkoltyshev@gmail.com"
+  },
+  "license": "MIT",
+  "author": "Pavel Koltyshev <pkoltyshev@gmail.com>",
+  "files": [
+    "README.md",
+    "LICENSE.md",
+    "index.js"
+  ],
+  "main": "index.js",
+  "repository": "pkolt/express-nunjucks",
+  "scripts": {
+    "test": "env JASMINE_CONFIG_PATH='./tests/jasmine.json' ./node_modules/.bin/jasmine"
+  },
+  "dependencies": {
+    "nunjucks": ">= 1.0.0"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "express": ">= 4.0.0",
+    "jasmine": ">= 2.0.0",
+    "jasmine-core": ">= 2.0.0",
+    "request": ">= 2.0.0"
+  }
+}
