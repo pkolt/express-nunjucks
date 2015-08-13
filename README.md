@@ -1,4 +1,4 @@
-# express-nunjucks
+# express-nunjucks [![Build Status](https://travis-ci.org/pkolt/express-nunjucks.svg?branch=master)](https://travis-ci.org/pkolt/express-nunjucks)
 
   Is the glue for express and nunjucks.
 
