@@ -1,6 +1,6 @@
 {
   "name": "express-nunjucks",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Is the glue for express and nunjucks",
   "keywords": [
     "express",

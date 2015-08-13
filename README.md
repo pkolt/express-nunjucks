@@ -1,6 +1,6 @@
 # express-nunjucks [![Build Status](https://travis-ci.org/pkolt/express-nunjucks.svg?branch=master)](https://travis-ci.org/pkolt/express-nunjucks)
 
-  Is the glue for express and nunjucks.
+  Is the glue for [express](http://expressjs.com/) and [nunjucks](http://mozilla.github.io/nunjucks/).
 
 ## Features
 
@@ -21,7 +21,7 @@ $ npm install express-nunjucks
 // mysite/index.js
 
 var express = require('express');
-var nunjucks = require('./express-nunjucks');
+var nunjucks = require('express-nunjucks');
 var app1 = require('./app1');
 var app2 = require('./app2');
 
@@ -56,7 +56,7 @@ app.listen(8000);
 // mysite/app1/index.js
 
 var express = require('express');
-var nunjucks = require('./express-nunjucks');
+var nunjucks = require('express-nunjucks');
 
 
 var app = express();
@@ -95,7 +95,7 @@ module.exports = app;
 
 ### nunjucks.setup([,opts] [,rootApp] [,cb])
 
-  Sets the settings for templates. The available flags in opts is **autoescape**, **watch** and **[tags][api_custom_tags]**.
+  Sets the settings for templates. The available flags in opts is `autoescape`, `watch` and [tags][api_custom_tags].
 
 ### nunjucks.ready(cb)
 
