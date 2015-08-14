@@ -1,6 +1,6 @@
 {
   "name": "express-nunjucks",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Is the glue for express and nunjucks",
   "keywords": [
     "express",
@@ -21,7 +21,7 @@
   "main": "index.js",
   "repository": "pkolt/express-nunjucks",
   "scripts": {
-    "test": "env JASMINE_CONFIG_PATH='./tests/jasmine.json' ./node_modules/.bin/jasmine"
+    "test": "env JASMINE_CONFIG_PATH='./test/jasmine.json' ./node_modules/.bin/jasmine"
   },
   "dependencies": {
     "nunjucks": ">= 1.0.0"
