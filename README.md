@@ -95,7 +95,7 @@ module.exports = app;
 
 ### nunjucks.setup([,opts] [,rootApp] [,cb])
 
-  Sets the settings for templates. The available flags in opts is `autoescape`, `watch` and [tags][api_custom_tags].
+  Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
 
 ### nunjucks.ready(cb)
 
