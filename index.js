@@ -39,6 +39,7 @@ module.exports = {
      * @param {*} opts
      * @param {Boolean} [opts.autoescape=false]
      * @param {Boolean} [opts.watch=false]
+     * @param {Boolean} [opts.noCache=false]
      * @param {*} [opts.tags]
      * @param {*} [rootApp]
      * @param {Function} [cb]
@@ -54,7 +55,7 @@ module.exports = {
             this.useApp(rootApp, cb);
         }
 
-        var loader = new nunjucks.FileSystemLoader(this.paths, !opts.watch),
+        var loader = new nunjucks.FileSystemLoader(this.paths, opts),
             env = new nunjucks.Environment(loader, opts);
 
         this.apps.forEach(function(app) {
