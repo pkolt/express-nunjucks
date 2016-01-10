@@ -1,6 +1,6 @@
 {
   "name": "express-nunjucks",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "description": "Is the glue for express and nunjucks",
   "keywords": [
     "express",
@@ -24,15 +24,15 @@
     "test": "env JASMINE_CONFIG_PATH='./test/jasmine.json' ./node_modules/.bin/jasmine"
   },
   "dependencies": {
-    "nunjucks": ">= 1.0.0"
+    "nunjucks": ">=2.3.0"
   },
   "engines": {
     "node": ">= 0.10.0"
   },
   "devDependencies": {
-    "express": ">= 4.0.0",
-    "jasmine": ">= 2.0.0",
-    "jasmine-core": ">= 2.0.0",
-    "request": ">= 2.0.0"
+    "express": ">=4.13.3",
+    "jasmine": ">=2.4.1",
+    "jasmine-core": ">=2.4.1",
+    "request": ">=2.67.0"
   }
 }
