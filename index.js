@@ -1,85 +1,133 @@
+'use strict';
+
 var nunjucks = require('nunjucks');
+var Promise = require('bluebird');
+var deprecate = require('depd')('express-nunjucks');
 
 
 module.exports = {
-    env: null,
-    apps: [],
-    paths: [],
-    callbacks: [],
+    _env: null,
+    _apps: [],
+    _paths: [],
+    _callbacks: [],
+
+    /**
+     * To connect your application to the template system.
+     * @param {*} [app] - express application.
+     * @param {Function} [cb] - function, which will be transferred environment.
+     * @return {Promise} - which will be transferred environment.
+     */
+    register: function(app, cb) {
+        var self = this;
+        
+        return new Promise(function(resolve, reject) {
+            if (!app && !cb) {
+                reject(new Error('Set parameters app or cb.'));
+            } else {
+                if (app) {
+                    if (self._apps.indexOf(app) !== -1) {
+                        throw new Error('Application already registered.');
+                    }
+                    self._apps.unshift(app);
+
+                    var paths = app.get('views');
+
+                    if (typeof paths === 'string') {
+                        paths = [paths];
+                    }
+
+                    if (Array.isArray(paths)) {
+                        self._paths = paths.concat(self._paths);
+                    }
+                }
+
+                if (typeof cb === 'function') {
+                    if (self._callbacks.indexOf(cb) !== -1) {
+                        throw new Error('Callback already registered.');
+                    }
+                    self._callbacks.unshift(cb);
+                }
+
+                self._callbacks.unshift(resolve);
+            }
+        });
+    },
+
+
     /**
      * To connect your application to the template system.
      * @param {*} app - express application.
-     * @param {Function} [cb] - function which will be passed environment.
+     * @param {Function} [cb] - function, which will be transferred environment.
+     * @deprecated
      */
     useApp: function(app, cb) {
-        if (this.env) {
-            throw new Error('The template system is already initialized.');
-        }
-
-        if (!app) {
-            throw new Error('Is not set app: ' + app);
-        }
-        this.apps.unshift(app);
-
-        var path = app.get('views');
-        if (typeof path === 'string' || Array.isArray(path)) {
-            if (typeof path === 'string') {
-                path = [path];
-            }
-            // Add to beginning of array.
-            this.paths.splice.apply(this.paths, [0, 0].concat(path));
-        }
-
-        if (typeof cb === 'function') {
-            this.callbacks.unshift(cb);
-        }
+        return this.register(app, cb);
     },
     /**
      * Configuring the template system.
      * @param {*} opts
-     * @param {Boolean} [opts.autoescape=false]
-     * @param {Boolean} [opts.watch=false]
-     * @param {Boolean} [opts.noCache=false]
-     * @param {*} [opts.tags]
+     * @param {Boolean} [opts.autoescape=true] controls if output with dangerous characters are escaped automatically.
+     * @param {Boolean} [opts.throwOnUndefined=false] throw errors when outputting a null/undefined value.
+     * @param {Boolean} [opts.trimBlocks=false] automatically remove trailing newlines from a block/tag.
+     * @param {Boolean} [opts.lstripBlocks=false] automatically remove leading whitespace from a block/tag.
+     * @param {Boolean} [opts.watch=false] if true, the system will automatically update templates when they are changed on the filesystem.
+     * @param {Boolean} [opts.noCache=false] if true, the system will avoid using a cache and templates will be recompiled every single time.
+     * @param {*} [opts.tags] defines the syntax for nunjucks tags.
      * @param {*} [rootApp]
-     * @param {Function} [cb]
+     * @param {Function} [cb] - function, which will be transferred environment.
+     * @return {Promise} - which will be transferred environment.
      */
     setup: function(opts, rootApp, cb) {
-        if (this.env) {
-            throw new Error('The template system is already initialized.')
-        }
+        var self = this;
+        
+        return new Promise(function(resolve, reject) {
+            opts = opts || {};
 
-        opts = opts || {};
+            if (rootApp) {
+                self.register(rootApp, cb);
+            }
 
-        if (rootApp) {
-            this.useApp(rootApp, cb);
-        }
+            var loader = new nunjucks.FileSystemLoader(self._paths, opts);
+            var env = new nunjucks.Environment(loader, opts);
 
-        var loader = new nunjucks.FileSystemLoader(this.paths, opts),
-            env = new nunjucks.Environment(loader, opts);
+            self._apps.forEach(function(app) {
+                env.express(app);
+            });
 
-        this.apps.forEach(function(app) {
-            env.express(app);
+            self._callbacks.forEach(function(cb) {
+                cb(env);
+            });
+
+            self._env = env;
+            self._apps = [];
+            self._paths = [];
+            self._callbacks = [];
+
+            resolve(env);
         });
-
-        this.callbacks.forEach(function(cb) {
-            cb(env);
-        });
-
-        this.env = env;
-        this.apps = [];
-        this.paths = [];
-        this.callbacks = [];
     },
     /**
      * To wait for readiness of the template system.
-     * @param {Function} cb - function which will be passed environment.
+     * @param {Function} [cb] - function, which will be transferred environment.
+     * @return {Promise} - which will be transferred environment.
      */
     ready: function(cb) {
-        if (this.env) {
-            cb(this.env);
-        } else {
-            this.callbacks.push(cb);
-        }
+        var self = this;
+        
+        return new Promise(function(resolve, reject) {
+            if (self._env) {
+                if (typeof cb === 'function') {
+                    cb(self._env);
+                }
+                resolve(self._env);
+            } else {
+                if (typeof cb === 'function') {
+                    self._callbacks.push(cb);
+                }
+                self._callbacks.push(resolve);
+            }
+        });
     }
 };
+
+module.exports.useApp = deprecate.function(module.exports.useApp, 'use .register() instead .useApp()');

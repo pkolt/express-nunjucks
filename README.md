@@ -18,70 +18,81 @@ $ npm install express-nunjucks
 ### General application
 
 ```javascript
-// mysite/index.js
+// proj/index.js
 
-var express = require('express');
-var nunjucks = require('express-nunjucks');
-var app1 = require('./app1');
-var app2 = require('./app2');
+const express = require('express');
+const nunjucks = require('express-nunjucks');
+const app = require('./app');
+const rootApp = express();
 
-
-var app = express();
-
-app.set('view engine', 'html');
+// Default extension of template files.
+rootApp.set('view engine', 'html');
 
 // Templates in this directory will override the application templates.
-app.set('views', __dirname + '/templates');
+rootApp.set('views', __dirname + '/templates');
 
 // Configuring the template system.
 nunjucks.setup({
+    // (default: true) controls if output with dangerous characters are escaped automatically.
     autoescape: true,
-    watch: true
-}, app);
+    // (default: false) throw errors when outputting a null/undefined value.
+    throwOnUndefined: false,
+    // (default: false) automatically remove trailing newlines from a block/tag.
+    trimBlocks: false,
+    // (default: false) automatically remove leading whitespace from a block/tag.
+    lstripBlocks: false,
+    // (default: false) if true, the system will automatically update templates when they are changed on the filesystem.
+    watch: true,
+    // (default: false) if true, the system will avoid using a cache and templates will be recompiled every single time.
+    noCache: true,
+    // (default: see nunjucks syntax) defines the syntax for nunjucks tags.
+    tags: {}
+}, rootApp);
 
-app.get('/', function(req, res) {
+rootApp.get('/', function(req, res) {
     res.render('index', {title: 'Home page'});
 });
 
-app.use('/app1', app1);
-app.use('/app2', app2);
+rootApp.use('/app', app);
 // and more...
 
-app.listen(8000);
+rootApp.listen(8000);
 ```
 
 ### Sub application
 
 ```javascript
-// mysite/app1/index.js
+// proj/app/index.js
 
-var express = require('express');
-var nunjucks = require('express-nunjucks');
-
-
-var app = express();
+const express = require('express');
+const nunjucks = require('express-nunjucks');
+const filters = require('./filters');
+const app = express();
 
 // Template dir(s)
 app.set('views', __dirname + '/templates');
 
 // Add application to template engine.
-nunjucks.useApp(app, function(env) {
+nunjucks.register(app);
+
+// Add custom filter.
+nunjucks.register(app).then(function(env) {
     // Add custom filter.
-    env.addFilter('myfilter', function(str) {
-        // ...
+    Object.keys(filters).forEach(function(name) {
+        env.addFilter(name, filters[name]);
     });
 });
 
-// An alternative way.
-nunjucks.ready(function(env) {
+// Add custom filter (alternative way).
+nunjucks.ready().then(function(env) {
     // Add custom filter.
-    env.addFilter('myfilter', function(str) {
-        // ...
+    Object.keys(filters).forEach(function(name) {
+        env.addFilter(name, filters[name]);
     });
 });
 
 app.get('/', function(req, res) {
-    res.render('index', {title: 'This is first application!'});
+    res.render('index', {title: 'Sub application page'});
 });
 
 module.exports = app;
@@ -89,44 +100,42 @@ module.exports = app;
 
 ## API
 
-### nunjucks.useApp(app [,cb])
+### nunjucks.register([,app] [,cb]) -> Promise
 
   Add application to template engine. In the callback function [environment][api_env] will come.
 
-### nunjucks.setup([,opts] [,rootApp] [,cb])
+### nunjucks.setup([,opts] [,rootApp] [,cb]) -> Promise
 
   Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
 
-### nunjucks.ready(cb)
+### nunjucks.ready(cb) -> Promise
 
   Calls the function when ready environment. In the callback function [environment][api_env] will come.
 
 ## Template hierarchy
 
 ```
-rootApp
+proj
 |
 |- templates
 |   |
 |   |- base.html
-|   |- app1
-|       |
-|       |- page.html
-|
-|- app1
-|   |
-|   |-templates
+|   |- index.html
+|   |-app
 |      |
-|      |-app1
-|         |
-|         |-page.html
+|      |-page.html
 |
-|-app2
+|- app
     |
     |-templates
+       |
+       |-app
+          |
+          |-index.html
+          |-page.html
 ```
 
-The templates in the directory `rootApp/templates/app1` override templates `rootApp/app1/templates/app1`.
+The templates in the directory `proj/templates/app` override templates `proj/app/templates/app`.
 
 ## Tests
 
