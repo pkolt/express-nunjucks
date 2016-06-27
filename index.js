@@ -10,6 +10,7 @@ module.exports = {
     _apps: [],
     _paths: [],
     _callbacks: [],
+    nunjucks: nunjucks,
 
     /**
      * To connect your application to the template system.
@@ -19,7 +20,7 @@ module.exports = {
      */
     register: function(app, cb) {
         var self = this;
-        
+
         return new Promise(function(resolve, reject) {
             if (!app && !cb) {
                 reject(new Error('Set parameters app or cb.'));
@@ -79,7 +80,7 @@ module.exports = {
      */
     setup: function(opts, rootApp, cb) {
         var self = this;
-        
+
         return new Promise(function(resolve, reject) {
             opts = opts || {};
 
@@ -113,7 +114,7 @@ module.exports = {
      */
     ready: function(cb) {
         var self = this;
-        
+
         return new Promise(function(resolve, reject) {
             if (self._env) {
                 if (typeof cb === 'function') {
