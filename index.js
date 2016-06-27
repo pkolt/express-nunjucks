@@ -10,6 +10,7 @@ module.exports = {
     _apps: [],
     _paths: [],
     _callbacks: [],
+    nunjucks: nunjucks,
 
     /**
      * To connect your application to the template system.
@@ -17,10 +18,10 @@ module.exports = {
      * @param {Function} [cb] - function, which will be transferred environment.
      * @return {Promise} - which will be transferred environment.
      */
-    register: function(app, cb) {
+    register: function (app, cb) {
         var self = this;
-        
-        return new Promise(function(resolve, reject) {
+
+        return new Promise(function (resolve, reject) {
             if (!app && !cb) {
                 reject(new Error('Set parameters app or cb.'));
             } else {
@@ -60,7 +61,7 @@ module.exports = {
      * @param {Function} [cb] - function, which will be transferred environment.
      * @deprecated
      */
-    useApp: function(app, cb) {
+    useApp: function (app, cb) {
         return this.register(app, cb);
     },
     /**
@@ -77,10 +78,10 @@ module.exports = {
      * @param {Function} [cb] - function, which will be transferred environment.
      * @return {Promise} - which will be transferred environment.
      */
-    setup: function(opts, rootApp, cb) {
+    setup: function (opts, rootApp, cb) {
         var self = this;
-        
-        return new Promise(function(resolve, reject) {
+
+        return new Promise(function (resolve, reject) {
             opts = opts || {};
 
             if (rootApp) {
@@ -90,11 +91,11 @@ module.exports = {
             var loader = new nunjucks.FileSystemLoader(self._paths, opts);
             var env = new nunjucks.Environment(loader, opts);
 
-            self._apps.forEach(function(app) {
+            self._apps.forEach(function (app) {
                 env.express(app);
             });
 
-            self._callbacks.forEach(function(cb) {
+            self._callbacks.forEach(function (cb) {
                 cb(env);
             });
 
@@ -111,10 +112,10 @@ module.exports = {
      * @param {Function} [cb] - function, which will be transferred environment.
      * @return {Promise} - which will be transferred environment.
      */
-    ready: function(cb) {
+    ready: function (cb) {
         var self = this;
-        
-        return new Promise(function(resolve, reject) {
+
+        return new Promise(function (resolve, reject) {
             if (self._env) {
                 if (typeof cb === 'function') {
                     cb(self._env);
