@@ -5,7 +5,9 @@
 ## Features
 
   - Easy connection;
-  - The use of common templates, filters and extensions.
+  - The use of common templates, filters and extensions;
+  - Uses an asynchronous loader templates [nunjucks-async-loader](https://github.com/pkolt/nunjucks-async-loader).
+  - Support context processors.
 
 ## Installation
 
@@ -13,129 +15,125 @@
 $ npm install express-nunjucks
 ```
 
-## Usage
-
-### General application
-
-```javascript
-// proj/index.js
-
-const express = require('express');
-const nunjucks = require('express-nunjucks');
-const app = require('./app');
-const rootApp = express();
-
-// Default extension of template files.
-rootApp.set('view engine', 'html');
-
-// Templates in this directory will override the application templates.
-rootApp.set('views', __dirname + '/templates');
-
-// Configuring the template system.
-nunjucks.setup({
-    // (default: true) controls if output with dangerous characters are escaped automatically.
-    autoescape: true,
-    // (default: false) throw errors when outputting a null/undefined value.
-    throwOnUndefined: false,
-    // (default: false) automatically remove trailing newlines from a block/tag.
-    trimBlocks: false,
-    // (default: false) automatically remove leading whitespace from a block/tag.
-    lstripBlocks: false,
-    // (default: false) if true, the system will automatically update templates when they are changed on the filesystem.
-    watch: true,
-    // (default: false) if true, the system will avoid using a cache and templates will be recompiled every single time.
-    noCache: true,
-    // (default: see nunjucks syntax) defines the syntax for nunjucks tags.
-    tags: {}
-}, rootApp);
-
-rootApp.get('/', function(req, res) {
-    res.render('index', {title: 'Home page'});
-});
-
-rootApp.use('/app', app);
-// and more...
-
-rootApp.listen(8000);
-```
-
-### Sub application
-
-```javascript
-// proj/app/index.js
-
-const express = require('express');
-const nunjucks = require('express-nunjucks');
-const filters = require('./filters');
-const app = express();
-
-// Template dir(s)
-app.set('views', __dirname + '/templates');
-
-// Add application to template engine.
-nunjucks.register(app);
-
-// Add custom filter.
-nunjucks.register(app).then(function(env) {
-    // Add custom filter.
-    Object.keys(filters).forEach(function(name) {
-        env.addFilter(name, filters[name]);
-    });
-});
-
-// Add custom filter (alternative way).
-nunjucks.ready().then(function(env) {
-    // Add custom filter.
-    Object.keys(filters).forEach(function(name) {
-        env.addFilter(name, filters[name]);
-    });
-});
-
-app.get('/', function(req, res) {
-    res.render('index', {title: 'Sub application page'});
-});
-
-module.exports = app;
-```
-
 ## API
 
-### nunjucks.register([,app] [,cb]) -> Promise
+### expressNunjucks([,config] [,cb]) -> Promise
 
-  Add application to template engine. In the callback function [environment][api_env] will come.
+  Add application to template engine.
 
-### nunjucks.setup([,opts] [,rootApp] [,cb]) -> Promise
+  **config** {Object}
 
-  Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
+  - **app** {Object} - root express application.
+  - **subApp** {Object} - sub express application.
+  - **templateDirs** {Array} - array of directories where templates are located.
+  - **ctxProcessors** {Array} - array of context processors.
+  - **extname='html'** {String} - the file extension for your templates. Allows not to write the extension in `res.render()`.
+  - **watch=false** {Boolean} - if true, the system will automatically update templates when they are changed on the filesystem.
+  - **noCache=false** {Boolean} - if true, the system will avoid using a cache and templates will be recompiled every single time.
+  - **autoescape=true** {Boolean} - controls if output with dangerous characters are escaped automatically.
+  - **throwOnUndefined=false** {Boolean} - throw errors when outputting a null/undefined value.
+  - **trimBlocks=false** {Boolean} - automatically remove trailing newlines from a block/tag.
+  - **lstripBlocks=false** {Boolean} - automatically remove leading whitespace from a block/tag.
+  - **tags** - defines the syntax for nunjucks tags.
 
-### nunjucks.ready(cb) -> Promise
+  **cb** {Function} - In the callback function [environment][api_env] will come.
 
-  Calls the function when ready environment. In the callback function [environment][api_env] will come.
+### [deprecated] expressNunjucks.register(subApp [,cb]) -> Promise
 
-## Template hierarchy
+  **Will be removed in version 2.0** Add application to template engine. In the callback function [environment][api_env] will come.
 
+### [deprecated] expressNunjucks.setup([,opts] [,rootApp] [,cb]) -> Promise
+
+  **Will be removed in version 2.0** Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
+
+### [deprecated] expressNunjucks.ready(cb) -> Promise
+
+  **Will be removed in version 2.0** Calls the function when ready environment. In the callback function [environment][api_env] will come.
+
+## Usage
+
+### Basic usage
+
+
+```javascript
+const express = require('express');
+const expressNunjucks = require('express-nunjucks');
+const app = express();
+const isDev = app.get('env') === 'development';
+
+app.use(expressNunjucks({
+    app: app,
+    watch: isDev,
+    noCache: isDev,
+    templateDirs: [__dirname + '/templates']
+}));
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.listen(3000);
 ```
-proj
-|
-|- templates
-|   |
-|   |- base.html
-|   |- index.html
-|   |-app
-|      |
-|      |-page.html
-|
-|- app
-    |
-    |-templates
-       |
-       |-app
-          |
-          |-index.html
-          |-page.html
+
+### Use filters
+
+Create [custom filters][api_custom_filters] in nunjucks.
+
+```javascript
+const express = require('express');
+const expressNunjucks = require('express-nunjucks');
+const filters = require('./filters');
+
+app.use(expressNunjucks({
+    app: app,
+    templateDirs: [__dirname + '/templates']
+}, (env) => {
+    // Add custom filter.
+    Object.keys(filters).forEach((name) => {
+        env.addFilter(name, filters[name]);
+    });
+}));
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.listen(3000);
 ```
 
-The templates in the directory `proj/templates/app` override templates `proj/app/templates/app`.
+### Use context processors
+
+  Context processors is one great idea from the [django framework][django_ctx_processors].
+
+```javascript
+const express = require('express');
+const expressNunjucks = require('express-nunjucks');
+const webpackAssets = require('./build/assets');
+
+// Adds information about the request in the context of the template.
+const reqCtxProcessor = (req, ctx) => {
+    ctx.req = req;
+};
+// Adds links to statics in the context of the template.
+const AssetsCtxProcessor = (req, ctx) => {
+    ctx.scripts = webpackAssets.scripts;
+    ctx.styles = webpackAssets.styles;
+};
+
+app.use(expressNunjucks({
+    app: app,
+    templateDirs: [__dirname + '/templates'],
+    ctxProcessors: [reqCtxProcessor, AssetsCtxProcessor]
+}));
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.listen(3000);
+```
+
+### Use application and sub application
 
 ## Tests
 
@@ -150,5 +148,7 @@ $ npm test
 
   [MIT](LICENSE.md)
 
+[django_ctx_processors]: https://docs.djangoproject.com/en/1.9/ref/templates/api/#built-in-template-context-processors
+[api_custom_filters]: http://mozilla.github.io/nunjucks/api.html#custom-filters
 [api_env]: http://mozilla.github.io/nunjucks/api.html#environment
 [api_custom_tags]: http://mozilla.github.io/nunjucks/api.html#customizing-syntax
