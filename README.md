@@ -21,7 +21,7 @@ $ npm install express-nunjucks
 
   Add application to template engine.
 
-  **config** {Object}
+#### config {Object}
 
   - **app** {Object} - root express application.
   - **subApp** {Object} - sub express application.
@@ -36,19 +36,24 @@ $ npm install express-nunjucks
   - **lstripBlocks=false** {Boolean} - automatically remove leading whitespace from a block/tag.
   - **tags** - defines the syntax for nunjucks tags.
 
-  **cb** {Function} - In the callback function [environment][api_env] will come.
+#### cb {Function}
+
+  In the callback function [environment][api_env] will come.
 
 ### [deprecated] expressNunjucks.register(subApp [,cb]) -> Promise
 
-  **Will be removed in version 2.0** Add application to template engine. In the callback function [environment][api_env] will come.
+  **Will be removed in version 2.0**
+  Add application to template engine. In the callback function [environment][api_env] will come.
 
 ### [deprecated] expressNunjucks.setup([,opts] [,rootApp] [,cb]) -> Promise
 
-  **Will be removed in version 2.0** Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
+  **Will be removed in version 2.0**
+  Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
 
 ### [deprecated] expressNunjucks.ready(cb) -> Promise
 
-  **Will be removed in version 2.0** Calls the function when ready environment. In the callback function [environment][api_env] will come.
+  **Will be removed in version 2.0**
+  Calls the function when ready environment. In the callback function [environment][api_env] will come.
 
 ## Usage
 
@@ -134,6 +139,79 @@ app.listen(3000);
 ```
 
 ### Use application and sub application
+
+### General application
+
+```javascript
+// proj/app.js
+
+const express = require('express');
+const expressNunjucks = require('express-nunjucks');
+const subApp = require('./subapp');
+const app = express();
+
+
+app.use(expressNunjucks({
+    app: app,
+    templateDirs: [__dirname + '/templates']
+}));
+
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.use('/subApp', subApp);
+// and more...
+
+app.listen(3000);
+```
+
+### Sub application
+
+```javascript
+// proj/subapp/index.js
+
+const express = require('express');
+const expressNunjucks = require('express-nunjucks');
+const app = express();
+
+app.use(expressNunjucks({
+    subApp: app,
+    templateDirs: [__dirname + '/templates']
+}));
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+module.exports = app;
+```
+
+### Template hierarchy
+
+```
+proj
+|
+|- templates
+|   |
+|   |- base.html
+|   |- index.html
+|   |-subApp
+|      |
+|      |-page.html
+|
+|- subApp
+    |
+    |-templates
+       |
+       |-subApp
+          |
+          |-index.html
+          |-page.html
+```
+
+The templates in the directory `proj/templates/subApp` override templates `proj/subApp/templates/subApp`.
 
 ## Tests
 
