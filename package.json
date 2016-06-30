@@ -32,10 +32,10 @@
     "node": ">= 4"
   },
   "devDependencies": {
-    "express": ">=4.13.4",
-    "jasmine": ">=2.4.1",
-    "jasmine-core": ">=2.4.1",
+    "express": "^4.13.4",
+    "jasmine": "^2.4.1",
+    "jasmine-core": "^2.4.1",
     "supertest": "^1.2.0",
-    "nunjucks": ">=2.3.0"
+    "nunjucks": "^2.3.0"
   }
 }
