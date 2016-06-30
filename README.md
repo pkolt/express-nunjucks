@@ -140,7 +140,7 @@ app.listen(3000);
 
 ### Use application and sub application
 
-### General application
+#### General application
 
 ```javascript
 // proj/app.js
@@ -167,7 +167,7 @@ app.use('/subApp', subApp);
 app.listen(3000);
 ```
 
-### Sub application
+#### Sub application
 
 ```javascript
 // proj/subapp/index.js
@@ -188,7 +188,7 @@ app.get('/', (req, res) => {
 module.exports = app;
 ```
 
-### Template hierarchy
+#### Template hierarchy
 
 ```
 proj
