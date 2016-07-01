@@ -21,22 +21,22 @@ $ npm install express-nunjucks
 
   Add application to template engine.
 
-#### config {Object}
+#### `config {Object}`
 
-  - **app** {Object} - root express application.
-  - **subApp** {Object} - sub express application.
-  - **templateDirs** {Array} - array of directories where templates are located.
-  - **ctxProcessors** {Array} - array of context processors.
-  - **extname='html'** {String} - the file extension for your templates. Allows not to write the extension in `res.render()`.
-  - **watch=false** {Boolean} - if true, the system will automatically update templates when they are changed on the filesystem.
-  - **noCache=false** {Boolean} - if true, the system will avoid using a cache and templates will be recompiled every single time.
-  - **autoescape=true** {Boolean} - controls if output with dangerous characters are escaped automatically.
-  - **throwOnUndefined=false** {Boolean} - throw errors when outputting a null/undefined value.
-  - **trimBlocks=false** {Boolean} - automatically remove trailing newlines from a block/tag.
-  - **lstripBlocks=false** {Boolean} - automatically remove leading whitespace from a block/tag.
-  - **tags** - defines the syntax for nunjucks tags.
+  - `app {Object}` - root express application.
+  - `subApp {Object}` - sub express application.
+  - `templateDirs {Array}` - array of directories where templates are located.
+  - `ctxProcessors {Array}` - array of context processors.
+  - `extname='html' {String}` - the file extension for your templates. Allows not to write the extension in `res.render()`.
+  - `watch=false {Boolean}` - if true, the system will automatically update templates when they are changed on the filesystem.
+  - `noCache=false {Boolean}` - if true, the system will avoid using a cache and templates will be recompiled every single time.
+  - `autoescape=true {Boolean}` - controls if output with dangerous characters are escaped automatically.
+  - `throwOnUndefined=false {Boolean}` - throw errors when outputting a null/undefined value.
+  - `trimBlocks=false {Boolean}` - automatically remove trailing newlines from a block/tag.
+  - `lstripBlocks=false {Boolean}` - automatically remove leading whitespace from a block/tag.
+  - `tags` - defines the syntax for nunjucks tags.
 
-#### cb {Function}
+#### `cb {Function}`
 
   In the callback function [environment][api_env] will come.
 
