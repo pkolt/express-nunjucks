@@ -12,48 +12,34 @@
 ## Installation
 
 ```bash
-$ npm install express-nunjucks
+$ npm install --save express-nunjucks
 ```
 
 ## API
 
-### expressNunjucks([,config] [,cb]) -> Promise
+### expressNunjucks(apps [,config]) -> njk
 
-  Add application to template engine.
+#### `apps {Object|Array}`
+
+  [Express application][exp_app] or an array of applications.
 
 #### `config {Object}`
-
-  - `app {Object}` - root express application.
-  - `subApp {Object}` - sub express application.
-  - `templateDirs {Array}` - array of directories where templates are located.
-  - `ctxProcessors {Array}` - array of context processors.
-  - `extname='html' {String}` - the file extension for your templates. Allows not to write the extension in `res.render()`.
   - `watch=false {Boolean}` - if true, the system will automatically update templates when they are changed on the filesystem.
   - `noCache=false {Boolean}` - if true, the system will avoid using a cache and templates will be recompiled every single time.
   - `autoescape=true {Boolean}` - controls if output with dangerous characters are escaped automatically.
   - `throwOnUndefined=false {Boolean}` - throw errors when outputting a null/undefined value.
   - `trimBlocks=false {Boolean}` - automatically remove trailing newlines from a block/tag.
   - `lstripBlocks=false {Boolean}` - automatically remove leading whitespace from a block/tag.
-  - `tags` - defines the syntax for nunjucks tags.
+  - `filters` - defines the syntax for [nunjucks filters][njk_custom_filters].
+  - `tags` - defines the syntax for [nunjucks tags][njk_custom_tags].
 
-#### `cb {Function}`
+### njk.ctxProc(ctxProcessors) -> Middleware
 
-  In the callback function [environment][api_env] will come.
+  Creates [Express middleware][exp_middleware] to work context processors.
 
-### [deprecated] expressNunjucks.register(subApp [,cb]) -> Promise
+### njk.env -> Environment
 
-  **Will be removed in version 2.0**
-  Add application to template engine. In the callback function [environment][api_env] will come.
-
-### [deprecated] expressNunjucks.setup([,opts] [,rootApp] [,cb]) -> Promise
-
-  **Will be removed in version 2.0**
-  Sets the settings for templates. The available flags in opts is `autoescape`, `watch`, `noCache` and [tags][api_custom_tags].
-
-### [deprecated] expressNunjucks.ready(cb) -> Promise
-
-  **Will be removed in version 2.0**
-  Calls the function when ready environment. In the callback function [environment][api_env] will come.
+  Returns [Nunjucks Environment][njk_env].
 
 ## Usage
 
@@ -66,12 +52,12 @@ const expressNunjucks = require('express-nunjucks');
 const app = express();
 const isDev = app.get('env') === 'development';
 
-app.use(expressNunjucks({
-    app: app,
+app.set('views', __dirname + '/templates');
+
+const njk = expressNunjucks(app, {
     watch: isDev,
-    noCache: isDev,
-    templateDirs: [__dirname + '/templates']
-}));
+    noCache: isDev
+});
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -82,22 +68,21 @@ app.listen(3000);
 
 ### Use filters
 
-Create [custom filters][api_custom_filters] in nunjucks.
+Create [custom filters][njk_custom_filters] in nunjucks.
 
 ```javascript
 const express = require('express');
 const expressNunjucks = require('express-nunjucks');
 const filters = require('./filters');
 
-app.use(expressNunjucks({
-    app: app,
-    templateDirs: [__dirname + '/templates']
-}, (env) => {
+const app = express();
+
+app.set('views', __dirname + '/templates');
+
+const njk = expressNunjucks(app, {
     // Add custom filter.
-    Object.keys(filters).forEach((name) => {
-        env.addFilter(name, filters[name]);
-    });
-}));
+    filters: filters
+});
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -108,28 +93,33 @@ app.listen(3000);
 
 ### Use context processors
 
-  Context processors is one great idea from the [django framework][django_ctx_processors].
+  Context processors is one great idea from the [django framework][dj_ctx_processors].
 
 ```javascript
 const express = require('express');
 const expressNunjucks = require('express-nunjucks');
 const webpackAssets = require('./build/assets');
 
+const app = express();
+
+app.set('views', __dirname + '/templates');
+
 // Adds information about the request in the context of the template.
 const reqCtxProcessor = (req, ctx) => {
     ctx.req = req;
 };
 // Adds links to statics in the context of the template.
-const AssetsCtxProcessor = (req, ctx) => {
+const assetsCtxProcessor = (req, ctx) => {
     ctx.scripts = webpackAssets.scripts;
     ctx.styles = webpackAssets.styles;
 };
 
-app.use(expressNunjucks({
-    app: app,
-    templateDirs: [__dirname + '/templates'],
-    ctxProcessors: [reqCtxProcessor, AssetsCtxProcessor]
-}));
+const njk = expressNunjucks(app);
+
+app.use(njk.ctxProc([
+    reqCtxProcessor,
+    assetsCtxProcessor    
+]));
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -148,14 +138,12 @@ app.listen(3000);
 const express = require('express');
 const expressNunjucks = require('express-nunjucks');
 const subApp = require('./subapp');
+
 const app = express();
 
+app.set('views', __dirname + '/templates');
 
-app.use(expressNunjucks({
-    app: app,
-    templateDirs: [__dirname + '/templates']
-}));
-
+const njk = expressNunjucks([app, subApp]);
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -173,13 +161,9 @@ app.listen(3000);
 // proj/subapp/index.js
 
 const express = require('express');
-const expressNunjucks = require('express-nunjucks');
 const app = express();
 
-app.use(expressNunjucks({
-    subApp: app,
-    templateDirs: [__dirname + '/templates']
-}));
+app.set('views', __dirname + '/templates');
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -226,7 +210,10 @@ $ npm test
 
   [MIT](LICENSE.md)
 
-[django_ctx_processors]: https://docs.djangoproject.com/en/1.9/ref/templates/api/#built-in-template-context-processors
-[api_custom_filters]: http://mozilla.github.io/nunjucks/api.html#custom-filters
-[api_env]: http://mozilla.github.io/nunjucks/api.html#environment
-[api_custom_tags]: http://mozilla.github.io/nunjucks/api.html#customizing-syntax
+[dj_ctx_processors]: https://docs.djangoproject.com/en/1.9/ref/templates/api/#built-in-template-context-processors
+[njk_custom_filters]: http://mozilla.github.io/nunjucks/api.html#custom-filters
+[njk_custom_tags]: http://mozilla.github.io/nunjucks/api.html#customizing-syntax
+[njk_env]: http://mozilla.github.io/nunjucks/api.html#environment
+[exp_engine]: http://expressjs.com/en/api.html#app.engine
+[exp_app]: http://expressjs.com/en/api.html#app
+[exp_middleware]: http://expressjs.com/en/guide/writing-middleware.html
