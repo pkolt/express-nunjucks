@@ -15,36 +15,7 @@
 $ npm install --save express-nunjucks
 ```
 
-## API
-
-### expressNunjucks(apps [,config]) -> njk
-
-#### `apps {Object|Array}`
-
-  [Express application][exp_app] or an array of applications.
-
-#### `config {Object}`
-  - `watch=false {Boolean}` - if true, the system will automatically update templates when they are changed on the filesystem.
-  - `noCache=false {Boolean}` - if true, the system will avoid using a cache and templates will be recompiled every single time.
-  - `autoescape=true {Boolean}` - controls if output with dangerous characters are escaped automatically.
-  - `throwOnUndefined=false {Boolean}` - throw errors when outputting a null/undefined value.
-  - `trimBlocks=false {Boolean}` - automatically remove trailing newlines from a block/tag.
-  - `lstripBlocks=false {Boolean}` - automatically remove leading whitespace from a block/tag.
-  - `filters` - defines the syntax for [nunjucks filters][njk_custom_filters].
-  - `tags` - defines the syntax for [nunjucks tags][njk_custom_tags].
-
-### njk.ctxProc(ctxProcessors) -> Middleware
-
-  Creates [Express middleware][exp_middleware] to work context processors.
-
-### njk.env -> Environment
-
-  Returns [Nunjucks Environment][njk_env].
-
 ## Usage
-
-### Basic usage
-
 
 ```javascript
 const express = require('express');
@@ -65,6 +36,34 @@ app.get('/', (req, res) => {
 
 app.listen(3000);
 ```
+
+## API
+
+### expressNunjucks(apps [,config]) -> njk
+
+#### `apps {Object|Array}`
+
+  [Express application][exp_app] or an array of applications.
+
+#### `config {Object}`
+  - `watch=false {Boolean}` - if true, the system will automatically update templates when they are changed on the filesystem.
+  - `noCache=false {Boolean}` - if true, the system will avoid using a cache and templates will be recompiled every single time.
+  - `autoescape=true {Boolean}` - controls if output with dangerous characters are escaped automatically.
+  - `throwOnUndefined=false {Boolean}` - throw errors when outputting a null/undefined value.
+  - `trimBlocks=false {Boolean}` - automatically remove trailing newlines from a block/tag.
+  - `lstripBlocks=false {Boolean}` - automatically remove leading whitespace from a block/tag.
+  - `tags` - defines the syntax for [nunjucks tags][njk_custom_tags].
+  - `filters` - defines the syntax for [nunjucks filters][njk_custom_filters].
+
+### njk.ctxProc(ctxProcessors) -> Middleware
+
+  Creates [Express middleware][exp_middleware] to work context processors.
+
+### njk.env -> Environment
+
+  Returns [Nunjucks Environment][njk_env].
+
+## Examples
 
 ### Use filters
 
@@ -181,21 +180,21 @@ proj
 |   |
 |   |- base.html
 |   |- index.html
-|   |-subApp
+|   |-subapp
 |      |
 |      |-page.html
 |
-|- subApp
+|- subapp
     |
     |-templates
        |
-       |-subApp
+       |-subapp
           |
           |-index.html
           |-page.html
 ```
 
-The templates in the directory `proj/templates/subApp` override templates `proj/subApp/templates/subApp`.
+The templates in the directory `proj/templates/subapp` override templates `proj/subapp/templates/subapp`.
 
 ## Tests
 
