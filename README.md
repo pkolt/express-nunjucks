@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-$ npm install --save express-nunjucks
+$ npm install nunjucks express-nunjucks --save
 ```
 
 ## Usage
