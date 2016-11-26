@@ -4,8 +4,8 @@
 
 ## Features
 
-  - Easy connection;
-  - The use of common templates, filters and extensions;
+  - Easy connection.
+  - Uses of common templates, filters and extensions.
   - Uses an asynchronous loader templates [nunjucks-async-loader](https://github.com/pkolt/nunjucks-async-loader).
   - Support context processors.
 
