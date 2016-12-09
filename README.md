@@ -54,6 +54,7 @@ app.listen(3000);
   - `lstripBlocks=false {Boolean}` - automatically remove leading whitespace from a block/tag.
   - `tags` - defines the syntax for [nunjucks tags][njk_custom_tags].
   - `filters` - defines the syntax for [nunjucks filters][njk_custom_filters].
+  - `loader` - defines [loader templates][njk_loader]. The default is the asynchronous loader templates.
 
 ### njk.ctxProc(ctxProcessors) -> Middleware
 
@@ -119,6 +120,27 @@ app.use(njk.ctxProc([
     reqCtxProcessor,
     assetsCtxProcessor    
 ]));
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.listen(3000);
+```
+
+### Use synchronous loader templates
+
+```javascript
+const express = require('express');
+const expressNunjucks = require('express-nunjucks');
+
+const app = express();
+
+app.set('views', __dirname + '/templates');
+
+const njk = expressNunjucks(app, {
+    loader: nunjucks.FileSystemLoader
+});
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -213,6 +235,7 @@ $ npm test
 [njk_custom_filters]: http://mozilla.github.io/nunjucks/api.html#custom-filters
 [njk_custom_tags]: http://mozilla.github.io/nunjucks/api.html#customizing-syntax
 [njk_env]: http://mozilla.github.io/nunjucks/api.html#environment
+[njk_loader]: https://mozilla.github.io/nunjucks/api.html#loader
 [exp_engine]: http://expressjs.com/en/api.html#app.engine
 [exp_app]: http://expressjs.com/en/api.html#app
 [exp_middleware]: http://expressjs.com/en/guide/writing-middleware.html

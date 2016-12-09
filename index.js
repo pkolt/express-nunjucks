@@ -2,7 +2,7 @@
 
 const path = require('path');
 const nunjucks = require('nunjucks');
-const nunjucksAsyncLoader = require('nunjucks-async-loader');
+const NunjucksAsyncLoader = require('nunjucks-async-loader');
 const assign = require('assign-deep');
 
 
@@ -20,7 +20,8 @@ module.exports = function(apps, config) {
         templateDirs = templateDirs.concat(app.get('views'));
     });
 
-    const loader = new nunjucksAsyncLoader(templateDirs, {
+    const Loader = config.loader || NunjucksAsyncLoader;
+    const loader = new Loader(templateDirs, {
         watch: config.watch,
         noCache: config.noCache
     });

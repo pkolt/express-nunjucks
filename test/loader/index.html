@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>{{title}}</title>
+</head>
+<body>
+    {% if homePage %}
+        {% include 'homePage.html' %}
+    {% else %}
+        {% include 'postList.html' %}
+    {% endif %}
+</body>
+</html>

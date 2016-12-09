@@ -244,3 +244,23 @@ test('override subapp template', async t => {
 
     t.regex(res.text, /override subapp index/);
 });
+
+
+test('sync loader', async t => {
+    const app = express();
+    app.set('views', __dirname + '/loader');
+
+    const njk = expressNunjucks(app, {
+        loader: nunjucks.FileSystemLoader
+    });
+
+    app.get('/', (req, res) => {
+        res.render('index');
+    });
+
+    const res = await request(app)
+        .get('/')
+        .expect(200);
+
+    t.regex(res.text, /Post list/);
+});
