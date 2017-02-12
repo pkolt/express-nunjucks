@@ -128,6 +128,8 @@ app.get('/', (req, res) => {
 app.listen(3000);
 ```
 
+  **Warning!** Context processors not supported to `app.render()`.
+
 ### Use synchronous loader templates
 
 ```javascript

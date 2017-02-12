@@ -264,3 +264,33 @@ test('sync loader', async t => {
 
     t.regex(res.text, /Post list/);
 });
+
+
+test('context processors app.render()', async t => {
+    const app = express();
+    app.set('views', __dirname + '/templates');
+
+    const njk = expressNunjucks(app);
+
+    const assetsCtxProcessor = (req, ctx) => {
+        ctx.scripts = ['index.js'];
+        ctx.styles = ['index.css'];
+    };
+
+    app.use(njk.ctxProc([
+        assetsCtxProcessor
+    ]));
+
+    app.get('/', (req, res) => {
+        app.render('ctx-proc', {title: 'ctx proc'}, function(err, html) {
+            if (err) throw err;
+            res.send(html);
+        });
+    });
+
+    const res = await request(app)
+        .get('/')
+        .expect(200);
+
+    t.regex(res.text, /ctx proc/);
+});
