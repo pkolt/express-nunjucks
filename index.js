@@ -46,7 +46,7 @@ module.exports = function(apps, config) {
         const view = this;
         const name = path.extname(view.name) ? view.name : view.name + view.ext;
 
-        const njkCtx = ctx._locals.njkCtx;
+        const njkCtx = ctx._locals && ctx._locals.njkCtx;
         if (njkCtx) {
             ctx = assign({}, ctx, njkCtx);
         }
