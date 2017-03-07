@@ -42,12 +42,12 @@ module.exports = function(apps, config) {
         });
     }
 
-  const globals = config.globals;
-  if (globals) {
-    Object.keys(globals).forEach(name => {
-      env.addGlobal(name, globals[name]);
-    });
-  }
+    const globals = config.globals;
+    if (globals) {
+        Object.keys(globals).forEach(name => {
+            env.addGlobal(name, globals[name]);
+        });
+    }
 
     const engine = function(filePath, ctx, cb) {
         const view = this;
