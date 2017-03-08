@@ -42,6 +42,13 @@ module.exports = function(apps, config) {
         });
     }
 
+    const globals = config.globals;
+    if (globals) {
+        Object.keys(globals).forEach(name => {
+            env.addGlobal(name, globals[name]);
+        });
+    }
+
     const engine = function(filePath, ctx, cb) {
         const view = this;
         const name = path.extname(view.name) ? view.name : view.name + view.ext;

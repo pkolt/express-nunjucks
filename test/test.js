@@ -52,6 +52,33 @@ test('custom filters', async t => {
     t.regex(res.text, /SnAkE/);
 });
 
+test('custom globals', async t => {
+    const app = express();
+    app.set('views', __dirname + '/templates');
+
+    const globals = {
+        snake: function(text) {
+            return (text || '').split('').map(function(ch, i) {
+                return i % 2 === 0 ? ch.toUpperCase() : ch.toLowerCase();
+            }).join('');
+        }
+    };
+
+    const njk = expressNunjucks(app, {
+        globals: globals
+    });
+
+    app.get('/', (req, res) => {
+        res.render('globals', {title: 'snake'});
+    });
+
+    const res = await request(app)
+        .get('/')
+        .expect(200);
+
+    t.regex(res.text, /SnAkE/);
+});
+
 
 test('custom tags', async t => {
     const app = express();
