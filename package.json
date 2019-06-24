@@ -24,7 +24,7 @@
     "test": "ava test/test*.js -v"
   },
   "dependencies": {
-    "assign-deep": "^0.4.5",
+    "assign-deep": "^1.0.1",
     "nunjucks-async-loader": "^1.1.1"
   },
   "engines": {
