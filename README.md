@@ -1,4 +1,4 @@
-# express-nunjucks [![Build Status](https://travis-ci.org/pkolt/express-nunjucks.svg?branch=master)](https://travis-ci.org/pkolt/express-nunjucks)
+# express-nunjucks ![](https://github.com/pkolt/express-nunjucks/workflows/main/badge.svg)
 
   Is the glue for [express](http://expressjs.com/) and [nunjucks](http://mozilla.github.io/nunjucks/).
 
