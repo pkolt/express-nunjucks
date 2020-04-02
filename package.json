@@ -1,6 +1,6 @@
 {
   "name": "express-nunjucks",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Is the glue for express and nunjucks",
   "keywords": [
     "express",
@@ -24,17 +24,17 @@
     "test": "ava test/test*.js -v"
   },
   "dependencies": {
-    "assign-deep": "^0.4.5",
-    "nunjucks-async-loader": "^1.1.1"
+    "assign-deep": "1.0.1",
+    "nunjucks-async-loader": "1.1.4"
   },
   "engines": {
     "node": ">= 4"
   },
   "devDependencies": {
-    "ava": "^0.16.0",
-    "express": "^4.13.4",
-    "nunjucks": "^2.3.0",
-    "supertest": "^1.2.0",
-    "supertest-as-promised": "^4.0.0"
+    "ava": "3.5.2",
+    "express": "4.17.1",
+    "nunjucks": "3.2.1",
+    "supertest": "4.0.2",
+    "supertest-as-promised": "4.0.2"
   }
 }
