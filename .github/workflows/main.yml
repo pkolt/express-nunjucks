@@ -1,23 +1,23 @@
 name: main
 
-on: push
+on:
+  push:
+    branches: ['master']
 
 jobs:
   test:
     name: Testing
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [8.x, 9.x, 10.x, 11.x, 12.x]
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
-      run: npm i
-    - name: Run tests
-      run: npm test
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Check format
+        run: npm run format
+      - name: Run tests
+        run: npm test

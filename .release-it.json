@@ -1,0 +1,13 @@
+{
+  "git": {
+    "commitMessage": "Release ${tagName}",
+    "tagAnnotation": "Release ${tagName}"
+  },
+  "hooks": {
+    "after:init": ["npm run format", "npm test"],
+    "after:bump": "npm run build"
+  },
+  "github": {
+    "release": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "rootDir": "./src",
+      "strict": true,
+      "declaration": true,
+      "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/index.ts"],
+    "exclude": ["node_modules"]
+  }
+  

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+
+    {% for src in scripts %}
+    <script src="{{src}}"></script>
+    {% endfor %} {% for href in styles %}
+    <link href="{{href}}" rel="stylesheet" />
+    {% endfor %}
+  </head>
+  <body></body>
+</html>
