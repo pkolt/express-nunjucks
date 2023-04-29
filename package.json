@@ -50,7 +50,7 @@
     "release": "release-it"
   },
   "dependencies": {
-    "nunjucks-async-loader": "^2.0.0-0"
+    "nunjucks-async-loader": "^2.0.0"
   },
   "engines": {
     "node": ">= 18"
