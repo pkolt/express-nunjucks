@@ -1,6 +1,6 @@
 {
   "name": "express-nunjucks",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Is the glue for express and nunjucks",
   "type": "module",
   "main": "dist/cjs/index.js",
