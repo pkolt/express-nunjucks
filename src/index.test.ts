@@ -1,14 +1,14 @@
 import { test } from 'node:test';
-import assert from 'node:assert';
-import { dirname } from 'node:path';
+import assert from 'node:assert/strict';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import request from 'supertest';
 import nunjucks from 'nunjucks';
-import expressNunjucks, { type ContextProcessor } from '../index.js';
+import expressNunjucks, { type ContextProcessor } from './index.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = join(dirname(__filename), './test');
 
 test('simple page', async () => {
   const app = express();
