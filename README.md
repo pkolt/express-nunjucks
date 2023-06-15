@@ -22,6 +22,9 @@ $ npm i nunjucks express-nunjucks
 ```typescript
 import express from 'express';
 import expressNunjucks from 'express-nunjucks';
+// For CommonJS
+// const expressNunjucks = require('express-nunjucks').default;
+
 const app = express();
 const isDev = app.get('env') === 'development';
 
@@ -251,6 +254,22 @@ proj
 ```
 
 The templates in the directory `proj/templates/subapp` override templates `proj/subapp/templates/subapp`.
+
+## TypeScript
+
+If you're having trouble importing a module into TypeScript, try adding settings:
+
+```json
+// tsconfig.json
+{
+    "compilerOptions": {
+      //...
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      //...
+    }
+  }
+```
 
 ## Tests
 
