@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
     "outDir": "./dist/esm",
-    "module": "ES2022",
     "verbatimModuleSyntax": true,
     "moduleResolution": "nodenext"
   }
