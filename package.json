@@ -27,7 +27,7 @@
   "files": [
     "README.md",
     "LICENSE.md",
-    "dist/*"
+    "dist"
   ],
   "repository": "pkolt/express-nunjucks",
   "scripts": {
