@@ -257,16 +257,13 @@ The templates in the directory `proj/templates/subapp` override templates `proj/
 
 ## TypeScript
 
-If you're having trouble importing a module into TypeScript, try adding settings:
+If you're having trouble importing a module into TypeScript, try adding settings to `tsconfig.json`:
 
 ```json
-// tsconfig.json
 {
     "compilerOptions": {
-      //...
       "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      //...
+      "allowSyntheticDefaultImports": true
     }
   }
 ```
